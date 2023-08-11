@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hakkasuru.jetdex.home.HomeScreen
-import com.hakkasuru.jetdex.pokemon.DetailScreen
+import com.hakkasuru.jetdex.detail.DetailScreen
 import com.hakkasuru.jetdex.ui.theme.JetDexTheme
 import dagger.hilt.android.AndroidEntryPoint
 

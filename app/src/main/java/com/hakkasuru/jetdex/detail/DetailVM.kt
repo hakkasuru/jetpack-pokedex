@@ -1,13 +1,10 @@
-package com.hakkasuru.jetdex.pokemon
+package com.hakkasuru.jetdex.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hakkasuru.jetdex.api.repository.PokeRepository
-import com.hakkasuru.jetdex.home.HomeVM
-import com.hakkasuru.jetdex.ui.model.Pokemon
 import com.hakkasuru.jetdex.ui.model.PokemonDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
