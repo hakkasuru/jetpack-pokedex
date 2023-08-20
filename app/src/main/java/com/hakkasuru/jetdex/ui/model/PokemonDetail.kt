@@ -6,11 +6,17 @@ data class PokemonDetail(
     val pokeColor: PokeColor,
     val spriteURL: String,
     val types: List<String> = emptyList(),
-    val stats: List<Stat> = emptyList()
+    val stats: List<Stat> = emptyList(),
+    val movesByLevel: List<Move> = emptyList(),
 ) {
     data class Stat(
         val name: String = "",
-        val base: Int = 0,
+        val base: Int = 0
+    )
+
+    data class Move(
+        val name: String = "",
+        val level: Int = 0
     )
 }
 
