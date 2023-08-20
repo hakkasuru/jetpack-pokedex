@@ -1,14 +1,11 @@
 package com.hakkasuru.jetdex.api.repository
 
-import android.util.Log
 import com.hakkasuru.jetdex.api.service.PokeService
 import com.hakkasuru.jetdex.ui.model.PokeColor
 import com.hakkasuru.jetdex.ui.model.Pokemon
 import com.hakkasuru.jetdex.ui.model.PokemonDetail
-import com.hakkasuru.jetdex.ui.model.mockPokemonList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class PokeRepository(private val pokeService: PokeService) {
 
@@ -35,12 +32,19 @@ class PokeRepository(private val pokeService: PokeService) {
         val pokeTypes = pokemonResponse.types.map { typeItem ->
             typeItem.type.name
         }
+        val pokeStats = pokemonResponse.stats.map {
+            PokemonDetail.Stat(
+                name = it.statDetail?.name ?: "",
+                base = it.baseStat
+            )
+        }
         val pokemon = PokemonDetail(
             identifier = pokemonResponse.id,
             name = pokemonResponse.name,
             pokeColor = typeToColor(pokeTypes.getOrNull(0) ?: ""),
             spriteURL = pokemonResponse.sprites?.other?.officialArtwork?.frontDefault ?: "",
-            types = pokeTypes
+            types = pokeTypes,
+            stats = pokeStats
         )
         emit(pokemon)
     }

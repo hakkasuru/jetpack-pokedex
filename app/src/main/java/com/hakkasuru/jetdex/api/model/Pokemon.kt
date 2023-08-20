@@ -13,7 +13,10 @@ data class Pokemon(
     val sprites: Sprites? = null,
 
     @field:Json(name = "types")
-    val types: List<TypeItem> = emptyList()
+    val types: List<TypeItem> = emptyList(),
+
+    @field:Json(name = "stats")
+    val stats: List<Stat> = emptyList()
 ) {
     data class Sprites(
         @field:Json(name = "front_default")
@@ -40,6 +43,22 @@ data class Pokemon(
         data class Type(
             @field:Json(name = "name")
             val name: String
+        )
+    }
+
+    data class Stat(
+        @field:Json(name = "base_stat")
+        val baseStat: Int = 0,
+
+        @field:Json(name = "effort")
+        val effort: Int = 0,
+
+        @field:Json(name = "stat")
+        val statDetail: StatDetail? = null
+    ) {
+        data class StatDetail(
+            @field:Json(name = "name")
+            val name: String = ""
         )
     }
 }

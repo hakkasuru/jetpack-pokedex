@@ -1,6 +1,7 @@
 package com.hakkasuru.jetdex.detail
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,18 +13,29 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -75,15 +87,6 @@ private fun ContentView(pokemon: PokemonDetail) {
             .background(color = pokemon.pokeColor.toColor(LocalContext.current))
             .fillMaxSize(1f)
     ) {
-        Column {
-            Spacer(modifier = Modifier.size(48.dp))
-            PokemonDetailHeader(
-                name = pokemon.name,
-                id = String.format("%04d", pokemon.identifier)
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            PokemonDetailSubHeader(labels = pokemon.types)
-        }
         RoundedRectangleDecoration(
             modifier = Modifier
                 .rotate(30f)
@@ -104,7 +107,17 @@ private fun ContentView(pokemon: PokemonDetail) {
                 .offset(x = 15.dp, y = 140.dp)
                 .align(Alignment.TopEnd)
         )
+        Column {
+            Spacer(modifier = Modifier.size(48.dp))
+            PokemonDetailHeader(
+                name = pokemon.name,
+                id = String.format("%04d", pokemon.identifier)
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            PokemonDetailSubHeader(labels = pokemon.types)
+        }
         PokeballDecoration(modifier = Modifier.align(Alignment.TopCenter))
+        PokemonDetailContentCard(pokemon)
         PokemonDetailMascot(modifier = Modifier.align(Alignment.TopCenter), spriteURL = pokemon.spriteURL)
     }
 }
@@ -236,5 +249,62 @@ private fun PokemonDetailMascot(modifier: Modifier = Modifier, spriteURL: String
     }
 }
 
+private enum class ContentSection(val title: String) {
+    BaseStats("Base Stats"),
+    Moves("Moves")
+}
+
 @Composable
-private fun PokemonDetailContentCard() {}
+private fun PokemonDetailContentCard(pokemon: PokemonDetail) {
+    Surface(
+        modifier = Modifier.padding(top = 320.dp),
+        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(1f)
+                .padding(top = 40.dp, start = 32.dp, end = 32.dp, bottom = 16.dp)
+        ) {
+            var selectedTabState by remember { mutableStateOf(0) }
+            TabRow(selectedTabIndex = selectedTabState) {
+                ContentSection.values().forEachIndexed { index, section ->
+                    Tab(
+                        text = { Text(text = section.title) },
+                        selected = selectedTabState == index,
+                        onClick = { selectedTabState = index }
+                    )
+                }
+            }
+            Box(modifier = Modifier.padding(vertical = 16.dp)) {
+                when (selectedTabState) {
+                    ContentSection.BaseStats.ordinal -> PokemonDetailBaseStats(pokemon.stats)
+                    ContentSection.Moves.ordinal -> Text(text = "Moves Content")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PokemonDetailBaseStats(stats: List<PokemonDetail.Stat>) {
+    LazyColumn {
+        items(stats) { stat ->
+            var progressState by remember { mutableStateOf(0f) }
+            val animatedProgressState by animateFloatAsState(
+                targetValue = progressState,
+                animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+                label = "animation progress state"
+            )
+            Text(text = stat.name.capitalize(Locale.current))
+            Spacer(modifier = Modifier.padding(4.dp))
+            LinearProgressIndicator(
+                progress = animatedProgressState,
+                strokeCap = StrokeCap.Round
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            LaunchedEffect(true) {
+                progressState = stat.base.toFloat() / 100f
+            }
+        }
+    }
+}

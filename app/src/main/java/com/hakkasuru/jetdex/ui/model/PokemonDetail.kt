@@ -5,8 +5,14 @@ data class PokemonDetail(
     val name: String,
     val pokeColor: PokeColor,
     val spriteURL: String,
-    val types: List<String> = emptyList()
-)
+    val types: List<String> = emptyList(),
+    val stats: List<Stat> = emptyList()
+) {
+    data class Stat(
+        val name: String = "",
+        val base: Int = 0,
+    )
+}
 
 fun mockPokemonDetail(): PokemonDetail {
     return PokemonDetail(
