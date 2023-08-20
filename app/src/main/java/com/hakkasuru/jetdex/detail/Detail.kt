@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
@@ -250,7 +251,9 @@ private fun PokemonDetailMascot(modifier: Modifier = Modifier, spriteURL: String
 }
 
 private enum class ContentSection(val title: String) {
+    About("About"),
     BaseStats("Base Stats"),
+    Evolution("Evolution"),
     Moves("Moves")
 }
 
@@ -263,22 +266,30 @@ private fun PokemonDetailContentCard(pokemon: PokemonDetail) {
         Column(
             modifier = Modifier
                 .fillMaxSize(1f)
-                .padding(top = 40.dp, start = 32.dp, end = 32.dp, bottom = 16.dp)
+                .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             var selectedTabState by remember { mutableStateOf(0) }
             TabRow(selectedTabIndex = selectedTabState) {
                 ContentSection.values().forEachIndexed { index, section ->
                     Tab(
-                        text = { Text(text = section.title) },
+                        text = {
+                            Text(
+                                text = section.title,
+                                style = Typography.labelMedium,
+                                textAlign = TextAlign.Center
+                            )
+                       },
                         selected = selectedTabState == index,
                         onClick = { selectedTabState = index }
                     )
                 }
             }
-            Box(modifier = Modifier.padding(vertical = 16.dp)) {
+            Box(modifier = Modifier.padding(16.dp)) {
                 when (selectedTabState) {
+                    ContentSection.About.ordinal -> Text(text = "About Content")
                     ContentSection.BaseStats.ordinal -> PokemonDetailBaseStats(pokemon.stats)
-                    ContentSection.Moves.ordinal -> Text(text = "Moves Content")
+                    ContentSection.Evolution.ordinal -> Text(text = "Evolution Content")
+                    ContentSection.Moves.ordinal -> PokemonDetailMoves()
                 }
             }
         }
@@ -307,4 +318,9 @@ private fun PokemonDetailBaseStats(stats: List<PokemonDetail.Stat>) {
             }
         }
     }
+}
+
+@Composable
+private fun PokemonDetailMoves() {
+    Text(text = "Moves Content")
 }
