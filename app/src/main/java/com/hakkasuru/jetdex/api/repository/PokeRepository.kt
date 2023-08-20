@@ -27,7 +27,7 @@ class PokeRepository(private val pokeService: PokeService) {
         emit(mPokemons)
     }
 
-    fun getPokemon(id: Int): Flow<PokemonDetail> = flow {
+    fun getPokemonDetail(id: Int): Flow<PokemonDetail> = flow {
         val pokemonResponse = pokeService.getPokemonByID(id)
         val pokeTypes = pokemonResponse.types.map { typeItem ->
             typeItem.type.name

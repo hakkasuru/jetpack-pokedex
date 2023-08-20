@@ -29,7 +29,7 @@ class DetailVM @Inject constructor(
         when (action) {
             is Action.FetchDetail -> {
                 viewModelScope.launch {
-                    pokeRepo.getPokemon(action.id)
+                    pokeRepo.getPokemonDetail(action.id)
                         .onStart {
                             _state.value = State.OnLoading
                        }
