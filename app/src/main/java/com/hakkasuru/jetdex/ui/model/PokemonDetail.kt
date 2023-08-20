@@ -8,6 +8,7 @@ data class PokemonDetail(
     val types: List<String> = emptyList(),
     val stats: List<Stat> = emptyList(),
     val movesByLevel: List<Move> = emptyList(),
+    val abilities: List<Ability> = emptyList()
 ) {
     data class Stat(
         val name: String = "",
@@ -17,6 +18,11 @@ data class PokemonDetail(
     data class Move(
         val name: String = "",
         val level: Int = 0
+    )
+
+    data class Ability(
+        val name: String = "",
+        val hidden: Boolean = false
     )
 }
 

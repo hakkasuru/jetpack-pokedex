@@ -19,8 +19,24 @@ data class Pokemon(
     val stats: List<Stat> = emptyList(),
 
     @field:Json(name = "moves")
-    val moves: List<MoveItem> = emptyList()
+    val moves: List<MoveItem> = emptyList(),
+
+    @field:Json(name = "abilities")
+    val abilities: List<AbilityItem> = emptyList()
 ) {
+
+    data class AbilityItem(
+        @field:Json(name = "ability")
+        val ability: Ability? = null,
+
+        @field:Json(name = "is_hidden")
+        val hidden: Boolean = false
+    ) {
+        data class Ability(
+            @field:Json(name = "name")
+            val name: String = ""
+        )
+    }
 
     data class MoveItem(
         @field:Json(name = "move")
