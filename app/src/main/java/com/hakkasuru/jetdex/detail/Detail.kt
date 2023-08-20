@@ -289,7 +289,7 @@ private fun PokemonDetailContentCard(pokemon: PokemonDetail) {
                     ContentSection.About.ordinal -> Text(text = "About Content")
                     ContentSection.BaseStats.ordinal -> PokemonDetailBaseStats(pokemon.stats)
                     ContentSection.Evolution.ordinal -> Text(text = "Evolution Content")
-                    ContentSection.Moves.ordinal -> PokemonDetailMoves()
+                    ContentSection.Moves.ordinal -> PokemonDetailMoves(pokemon.movesByLevel)
                 }
             }
         }
@@ -321,6 +321,10 @@ private fun PokemonDetailBaseStats(stats: List<PokemonDetail.Stat>) {
 }
 
 @Composable
-private fun PokemonDetailMoves() {
-    Text(text = "Moves Content")
+private fun PokemonDetailMoves(moves: List<PokemonDetail.Move>) {
+    LazyColumn {
+        items(moves) { move ->
+            Text(text = "${move.name} ${move.level}")
+        }
+    }
 }

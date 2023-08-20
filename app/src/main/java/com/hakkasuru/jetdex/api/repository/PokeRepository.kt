@@ -28,6 +28,10 @@ class PokeRepository(private val pokeService: PokeService) {
     }
 
     fun getPokemonDetail(id: Int): Flow<PokemonDetail> = flow {
+        data class MiniMove(
+            val name: String = ""
+        )
+
         val pokemonResponse = pokeService.getPokemonByID(id)
         val pokeTypes = pokemonResponse.types.map { typeItem ->
             typeItem.type.name
@@ -38,13 +42,23 @@ class PokeRepository(private val pokeService: PokeService) {
                 base = it.baseStat
             )
         }
+        val pokeMovesByLevelUp = pokemonResponse.moves.map { moveItem ->
+            val moveDetails = moveItem.versionGroupDetails.find { (it.version?.name == "red-blue" || it.version?.name == "firered-leafgreen") && it.method?.name == "level-up" }
+            moveDetails?.let {
+                PokemonDetail.Move(
+                    name = moveItem.move?.name ?: "",
+                    level = it.level
+                )
+            }
+        }.filterNotNull().sortedBy { it.level }
         val pokemon = PokemonDetail(
             identifier = pokemonResponse.id,
             name = pokemonResponse.name,
             pokeColor = typeToColor(pokeTypes.getOrNull(0) ?: ""),
             spriteURL = pokemonResponse.sprites?.other?.officialArtwork?.frontDefault ?: "",
             types = pokeTypes,
-            stats = pokeStats
+            stats = pokeStats,
+            movesByLevel = pokeMovesByLevelUp
         )
         emit(pokemon)
     }
