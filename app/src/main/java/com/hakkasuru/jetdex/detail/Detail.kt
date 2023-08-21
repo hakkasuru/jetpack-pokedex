@@ -311,9 +311,10 @@ private fun PokemonDetailBaseStats(stats: List<PokemonDetail.Stat>) {
                 animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
                 label = "animation progress state"
             )
-            Text(text = stat.name.capitalize(Locale.current))
+            Text(text = stat.name.capitalize(Locale.current).replace("-", " "))
             Spacer(modifier = Modifier.padding(4.dp))
             LinearProgressIndicator(
+                modifier = Modifier.fillMaxSize(1f),
                 progress = animatedProgressState,
                 strokeCap = StrokeCap.Round
             )
