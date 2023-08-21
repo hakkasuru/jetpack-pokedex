@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -39,14 +43,15 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -322,9 +327,55 @@ private fun PokemonDetailBaseStats(stats: List<PokemonDetail.Stat>) {
 
 @Composable
 private fun PokemonDetailMoves(moves: List<PokemonDetail.Move>) {
-    LazyColumn {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2)
+    ) {
         items(moves) { move ->
-            Text(text = "${move.name} ${move.level} ${move.type}")
+            Card(
+                modifier = Modifier.padding(8.dp).requiredHeight(100.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = move.pokeColor.toColor(LocalContext.current)
+                )
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    PokeballImage(
+                        modifier = Modifier.fillMaxSize(0.5f),
+                        tint = Color.Gray,
+                        opacity = 0.3f
+                    )
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = move.name.capitalize(Locale.current).replace("-", " "),
+                            style = Typography.titleSmall,
+                            textAlign = TextAlign.Center,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.size(1.dp))
+                        Text(
+                            text = move.type.capitalize(Locale.current),
+                            style = Typography.labelSmall,
+                            textAlign = TextAlign.Center,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.size(1.dp))
+                        Text(
+                            text = "learnt at level ${move.level}",
+                            fontSize = 10.sp,
+                            fontStyle = FontStyle.Italic,
+                            textAlign = TextAlign.Center,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.hakkasuru.jetdex.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val light_black_text_80 = Color(0x80000000)
 val light_black_text_60 = Color(0x60000000)
 
 val md_theme_light_primary = Color(0xFFB2244A)
