@@ -28,10 +28,6 @@ class PokeRepository(private val pokeService: PokeService) {
     }
 
     fun getPokemonDetail(id: Int): Flow<PokemonDetail> = flow {
-        data class MiniMove(
-            val name: String = ""
-        )
-
         val pokemonResponse = pokeService.getPokemonByID(id)
         val pokeTypes = pokemonResponse.types.map { typeItem ->
             typeItem.type.name
@@ -42,15 +38,31 @@ class PokeRepository(private val pokeService: PokeService) {
                 base = it.baseStat
             )
         }
-        val pokeMovesByLevelUp = pokemonResponse.moves.map { moveItem ->
-            val moveDetails = moveItem.versionGroupDetails.find { (it.version?.name == "red-blue" || it.version?.name == "firered-leafgreen") && it.method?.name == "level-up" }
-            moveDetails?.let {
+        val pokeMovesByLevelUp = pokemonResponse.moves.mapNotNull { moveItem ->
+            val versionDetails =
+                moveItem.versionGroupDetails.find {
+                    (it.version?.name == "red-blue" || it.version?.name == "firered-leafgreen") &&
+                            it.method?.name == "level-up"
+                }
+            versionDetails?.let { versionDetail ->
+                val moveResponse = moveItem.move?.name?.let { name -> pokeService.getMoveByName(name) }
                 PokemonDetail.Move(
                     name = moveItem.move?.name ?: "",
-                    level = it.level
+                    level = versionDetail.level,
+                    pp = moveResponse?.powerPoint,
+                    power  = moveResponse?.power,
+                    accuracy = moveResponse?.accuracy,
+                    type = moveResponse?.type?.name ?: "",
+                    pokeColor = typeToColor(moveResponse?.type?.name ?: "")
                 )
             }
-        }.filterNotNull().sortedBy { it.level }
+        }.sortedBy { it.level }
+        val pokeAbilities = pokemonResponse.abilities.map {
+            PokemonDetail.Ability(
+                name = it.ability?.name ?: "",
+                hidden = it.hidden
+            )
+        }
         val pokemon = PokemonDetail(
             identifier = pokemonResponse.id,
             name = pokemonResponse.name,
@@ -58,7 +70,8 @@ class PokeRepository(private val pokeService: PokeService) {
             spriteURL = pokemonResponse.sprites?.other?.officialArtwork?.frontDefault ?: "",
             types = pokeTypes,
             stats = pokeStats,
-            movesByLevel = pokeMovesByLevelUp
+            movesByLevel = pokeMovesByLevelUp,
+            abilities = pokeAbilities
         )
         emit(pokemon)
     }

@@ -17,7 +17,12 @@ data class PokemonDetail(
 
     data class Move(
         val name: String = "",
-        val level: Int = 0
+        val level: Int = 0,
+        val pp: Int? = null,
+        val power: Int? = null,
+        val accuracy: Int? = null,
+        val type: String = "",
+        val pokeColor: PokeColor = PokeColor.BLACK
     )
 
     data class Ability(

@@ -324,7 +324,7 @@ private fun PokemonDetailBaseStats(stats: List<PokemonDetail.Stat>) {
 private fun PokemonDetailMoves(moves: List<PokemonDetail.Move>) {
     LazyColumn {
         items(moves) { move ->
-            Text(text = "${move.name} ${move.level}")
+            Text(text = "${move.name} ${move.level} ${move.type}")
         }
     }
 }

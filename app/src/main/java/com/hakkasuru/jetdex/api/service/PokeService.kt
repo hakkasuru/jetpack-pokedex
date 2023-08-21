@@ -1,5 +1,6 @@
 package com.hakkasuru.jetdex.api.service
 
+import com.hakkasuru.jetdex.api.model.Move
 import com.hakkasuru.jetdex.api.model.Pokemon
 import com.hakkasuru.jetdex.api.model.PokemonList
 import retrofit2.http.GET
@@ -21,4 +22,9 @@ interface PokeService {
     suspend fun getPokemonByID(
         @Path("id") id: Int
     ): Pokemon
+
+    @GET("/api/v2/move/{name}")
+    suspend fun getMoveByName(
+        @Path("name") name: String
+    ): Move
 }
