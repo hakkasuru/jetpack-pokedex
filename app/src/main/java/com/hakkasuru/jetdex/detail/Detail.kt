@@ -4,17 +4,25 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -291,10 +299,51 @@ private fun PokemonDetailContentCard(pokemon: PokemonDetail) {
             }
             Box(modifier = Modifier.padding(16.dp)) {
                 when (selectedTabState) {
-                    ContentSection.About.ordinal -> Text(text = "About Content")
+                    ContentSection.About.ordinal -> PokemonDetailAbout(pokemon.description, pokemon.abilities)
                     ContentSection.BaseStats.ordinal -> PokemonDetailBaseStats(pokemon.stats)
                     ContentSection.Evolution.ordinal -> Text(text = "Evolution Content")
                     ContentSection.Moves.ordinal -> PokemonDetailMoves(pokemon.movesByLevel)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PokemonDetailAbout(description: String, abilities: List<PokemonDetail.Ability>) {
+    Column {
+        Text(
+            modifier = Modifier.fillMaxWidth(1f),
+            text = description,
+            textAlign = TextAlign.Justify
+        )
+        Spacer(modifier = Modifier.size(8.dp))
+        Text(text = "Abilities", style = Typography.titleLarge)
+        Spacer(modifier = Modifier.size(1.dp))
+        LazyRow {
+            items(abilities) { ability ->
+                Card(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .requiredHeight(80.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxHeight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = ability.name
+                                    .capitalize(Locale.current)
+                                    .replace("-", " "),
+                                style = Typography.titleSmall
+                            )
+                            if (ability.hidden) { Text(text = "hidden", style = Typography.labelMedium) }
+                        }
+                    }
                 }
             }
         }
@@ -333,7 +382,9 @@ private fun PokemonDetailMoves(moves: List<PokemonDetail.Move>) {
     ) {
         items(moves) { move ->
             Card(
-                modifier = Modifier.padding(8.dp).requiredHeight(100.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .requiredHeight(100.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = move.pokeColor.toColor(LocalContext.current)
                 )

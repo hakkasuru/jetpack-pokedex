@@ -29,6 +29,10 @@ class PokeRepository(private val pokeService: PokeService) {
 
     fun getPokemonDetail(id: Int): Flow<PokemonDetail> = flow {
         val pokemonResponse = pokeService.getPokemonByID(id)
+        val speciesResponse = pokeService.getSpeciesByID(id)
+        val description = speciesResponse
+            .flavouredTextEntries
+            .find { it.language?.name == "en" }?.text ?: ""
         val pokeTypes = pokemonResponse.types.map { typeItem ->
             typeItem.type.name
         }
@@ -66,6 +70,7 @@ class PokeRepository(private val pokeService: PokeService) {
         val pokemon = PokemonDetail(
             identifier = pokemonResponse.id,
             name = pokemonResponse.name,
+            description = description.replace("\\s".toRegex(), " "),
             pokeColor = typeToColor(pokeTypes.getOrNull(0) ?: ""),
             spriteURL = pokemonResponse.sprites?.other?.officialArtwork?.frontDefault ?: "",
             types = pokeTypes,
