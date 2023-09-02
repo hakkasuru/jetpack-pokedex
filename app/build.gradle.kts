@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.hakkasuru.jetdex"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.hakkasuru.jetdex"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -55,8 +55,8 @@ android {
 dependencies {
 
     val lifecycleGroupVersion = "2.6.1"
-    val hiltVersion = "2.47"
-    val glideVersion = "4.15.1"
+    val hiltVersion = "2.48"
+    val glideVersion = "4.16.0"
     val chuckerVersion = "4.0.0"
     val retrofitVersion = "2.9.0"
 
@@ -70,7 +70,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleGroupVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleGroupVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleGroupVersion")
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.1")
     implementation("com.github.bumptech.glide:glide:$glideVersion")
     ksp("com.github.bumptech.glide:ksp:$glideVersion")
     implementation("com.github.bumptech.glide:okhttp3-integration:$glideVersion")
